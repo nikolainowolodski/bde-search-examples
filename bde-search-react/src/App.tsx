@@ -13,16 +13,17 @@ export const App = () => {
 
   // Filter products based on search query
   const productSearchResults = useMemo(() => {
+    if (!userSearchQuery) return [] as Product[];
     return products.filter((product: Product) =>
-      product.name
-        .toLocaleLowerCase()
-        .includes(userSearchQuery.toLocaleLowerCase())
+      product.name.toLowerCase().includes(userSearchQuery.toLowerCase())
     );
   }, [userSearchQuery]);
 
   // List of all categories from matching products
   const categorySearchResults = useMemo(() => {
-    return productSearchResults.map((product) => product.category);
+    const categories = productSearchResults.map((product) => product.category);
+    // Make sure to return unique categories and get rid of dupes
+    return Array.from(new Set(categories));
   }, [productSearchResults]);
 
   // Cheap trick to show some type of "Suchvorschlag"
@@ -39,13 +40,6 @@ export const App = () => {
   // Update the search result whenever the user types something through our setter function
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setUserSearchQuery(e.target.value);
-    console.log(userSearchQuery);
-    console.log("===============");
-    console.log(productSearchResults);
-    console.log("===============");
-    console.log(categorySearchResults);
-    console.log("===============");
-    console.log(searchSuggestions);
   };
 
   return (
@@ -66,13 +60,14 @@ export const App = () => {
 
         {userSearchQuery && (
           <>
-            <div className="container">
+            <div className="grid grid-cols-2 gap-4">
               <div className="bg-white">
                 <h2 className="uppercase font-bold text-bde-blue mb-2 bg-bde-highlight p-3">
                   Produkte
                 </h2>
                 <ul>
-                  {productSearchResults.map((product, index) => (
+                  {/* Slicing here so we don't display to many entries at once */}
+                  {productSearchResults.slice(0, 10).map((product, index) => (
                     <li
                       key={index}
                       className="p-2 border-b last:border-none hover:bg-bde-highlight"
@@ -83,6 +78,12 @@ export const App = () => {
                       </div>
                     </li>
                   ))}
+                  {/* In case we don't have any results, display a basic message to the user */}
+                  {productSearchResults.length === 0 && (
+                    <li className="p-2 text-gray-500">
+                      Keine passenden Produkte gefunden.
+                    </li>
+                  )}
                 </ul>
               </div>
               <div className="bg-white">
@@ -90,7 +91,7 @@ export const App = () => {
                   Kategorien
                 </h2>
                 <ul>
-                  {categorySearchResults.map((category, index) => (
+                  {categorySearchResults.slice(0, 10).map((category, index) => (
                     <li
                       key={index}
                       className="p-2 border-b last:border-none hover:bg-bde-highlight"
@@ -98,23 +99,33 @@ export const App = () => {
                       {category}
                     </li>
                   ))}
-                </ul>
-              </div>
-              <div className="bg-white">
-                <h2 className="uppercase font-bold text-bde-blue mb-2 bg-bde-highlight p-3">
-                  Suchvorschläge
-                </h2>
-                <ul>
-                  {searchSuggestions.map((suggestion, index) => (
-                    <li
-                      key={index}
-                      className="p-2 border-b last:border-none hover:bg-bde-highlight"
-                    >
-                      {suggestion}
+                  {categorySearchResults.length === 0 && (
+                    <li className="p-2 text-gray-500">
+                      Keine passenden Kategorien gefunden.
                     </li>
-                  ))}
+                  )}
                 </ul>
               </div>
+            </div>
+            <div className="bg-white mt-4">
+              <h2 className="uppercase font-bold text-bde-blue mb-2 bg-bde-highlight p-3">
+                Suchvorschläge
+              </h2>
+              <ul>
+                {searchSuggestions.map((suggestion, index) => (
+                  <li
+                    key={index}
+                    className="p-2 border-b last:border-none hover:bg-bde-highlight"
+                  >
+                    {suggestion}
+                  </li>
+                ))}
+                {searchSuggestions.length === 0 && (
+                  <li className="p-2 text-gray-500">
+                    Keine passenden Vorschläge verfügbar.
+                  </li>
+                )}
+              </ul>
             </div>
           </>
         )}
