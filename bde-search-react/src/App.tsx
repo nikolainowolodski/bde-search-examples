@@ -50,12 +50,75 @@ export const App = () => {
 
   return (
     <>
-      <input
-        value={userSearchQuery}
-        onChange={handleInputChange}
-        type="text"
-        placeholder="test"
-      />
+      <div className="container mx-auto p-4">
+        <h1 className="text-2xl font-bold text-bde-blue mb-4 text-center">
+          Deutschlands beliebter Preisvergleich
+        </h1>
+        <h3 className="text-center mb-4">Es geht immer billiger.de</h3>
+
+        <input
+          value={userSearchQuery}
+          onChange={handleInputChange}
+          type="text"
+          placeholder="Wonach Suchen Sie?"
+          className="w-full p-2 border border-bde-highlight rounded mb-4 focus:outline-none focus:ring-2 focus:ring-bde-orange"
+        />
+
+        {userSearchQuery && (
+          <>
+            <div className="container">
+              <div className="bg-white">
+                <h2 className="uppercase font-bold text-bde-blue mb-2 bg-bde-highlight p-3">
+                  Produkte
+                </h2>
+                <ul>
+                  {productSearchResults.map((product, index) => (
+                    <li
+                      key={index}
+                      className="p-2 border-b last:border-none hover:bg-bde-highlight"
+                    >
+                      <div>{product.name}</div>
+                      <div className="text-sm text-gray-600">
+                        {product.category}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="bg-white">
+                <h2 className="uppercase font-bold text-bde-blue mb-2 bg-bde-highlight p-3">
+                  Kategorien
+                </h2>
+                <ul>
+                  {categorySearchResults.map((category, index) => (
+                    <li
+                      key={index}
+                      className="p-2 border-b last:border-none hover:bg-bde-highlight"
+                    >
+                      {category}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="bg-white">
+                <h2 className="uppercase font-bold text-bde-blue mb-2 bg-bde-highlight p-3">
+                  Suchvorschläge
+                </h2>
+                <ul>
+                  {searchSuggestions.map((suggestion, index) => (
+                    <li
+                      key={index}
+                      className="p-2 border-b last:border-none hover:bg-bde-highlight"
+                    >
+                      {suggestion}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
     </>
   );
 };
