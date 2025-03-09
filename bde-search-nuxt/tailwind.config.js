@@ -5,8 +5,8 @@ export default {
     extend: {
       colors: {
         "bde-blue": "#155798",
-        "bde-orange": "##fb761f",
-        "bde-highlight": "##e2e8f0",
+        "bde-orange": "#fb761f",
+        "bde-highlight": "#e2e8f0",
       },
     },
   },
